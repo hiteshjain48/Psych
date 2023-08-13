@@ -2,8 +2,9 @@ from tokens import Integer, Float
 
 
 class Interpreter:
-    def __init__(self, tree):
+    def __init__(self, tree, base):
         self.tree = tree
+        self.data = base
 
     def read_INT(self, value):
         return int(value)
@@ -11,9 +12,21 @@ class Interpreter:
     def read_FLT(self,value):
         return float(value)
 
-    def compute(self,left,op, right):
-        left_type = left.type
-        right_type = right.type
+    def read_VAR(self,id):
+        variable = self.data.read(id)
+        variable_type = variable.type
+        return getattr(self,f"read_{variable_type}")(variable.value)
+
+    def compute(self,left,op,right):
+        # left_type = "VAR" if str(left.type).startswith("VAR") else left.type
+        left_type = "VAR" if left.type.startswith("VAR") else left.type
+        right_type = "VAR" if right.type.startswith("VAR") else right.type
+
+        if op.value == "=":
+            left.type = f"VAR({right_type})"
+            self.data.write(left,right)
+            return self.data.read_all()
+
         left = getattr(self, f"read_{left_type}")(left.value)
         right = getattr(self,f"read_{right_type}")(right.value)
         if op.value == "+":
