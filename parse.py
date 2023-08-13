@@ -32,6 +32,25 @@ class Parser:
             left_node = [left_node, operation, right_node]
         return left_node
 
+    def statement(self):
+        if self.token.type == "DECL":
+            self.move()
+            left_node = self.variable()
+            self.move()
+            if self.token.value == "=":
+                operation = self.token.value
+                self.move()
+                right_node = self.expression()
+                return [left_node, operation, right_node]
+        elif self.token.type == "INT" or self.token.type == "FLT" or self.token.type == "OP":
+            return self.expression()
+
+    def variable(self):
+        if self.token.type == "VAR":
+            return self.token.value
+
+    def parse(self):
+        return self.statement()
     def move(self):
         self.idx += 1
         if self.idx < len(self.tokens):

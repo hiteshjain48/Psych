@@ -6,9 +6,9 @@ while True:
     tokenizer = Lexer(text)
     tokens = tokenizer.tokenize()
     parser = Parser(tokens)
-    tree = parser.expression()
-    interpreter = Interpreter(tree)
+    tree = parser.parse()
+    # interpreter = Interpreter(tree)
     print(tree)
-    output = interpreter.interpret()
-    print(output)
+    # output = interpreter.interpret()
+    # print(tokens)
 
