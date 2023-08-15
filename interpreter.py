@@ -39,16 +39,30 @@ class Interpreter:
             output = left / right
         return Integer(output) if (left_type == "INT" and right_type == "INT") else Float(output)
 
+    def compute_unary(self, operator, operand):
+        operand_type = "VAR" if operand.type.startswith("VAR") else operand.type
+        operand = getattr(self, f"read_{operand_type}")(operand.value)
+        if operator.value == "+":
+            output = +operand
+        elif operator.value == "-":
+            output = -operand
+        return Integer(output) if (operand_type == "INT") else Float(output)
+
     def interpret(self,tree=None):
         if tree is None:
             tree = self.tree
-        left = tree[0]
-        if isinstance(left,list):
-            left = self.interpret(left)
-        right = tree[2]
-        if isinstance(right,list):
-            right = self.interpret(right)
-        operator = tree[1]
-        return self.compute(left,operator,right)
+        if isinstance(tree, list) and len(tree) == 2:
+            return self.compute_unary(tree[0], tree[1])
+        elif not isinstance(tree, list):
+            return tree
+        else:
+            left = tree[0]
+            if isinstance(left,list):
+                left = self.interpret(left)
+            right = tree[2]
+            if isinstance(right,list):
+                right = self.interpret(right)
+            operator = tree[1]
+            return self.compute(left,operator,right)
 
 
