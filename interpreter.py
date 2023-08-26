@@ -37,6 +37,20 @@ class Interpreter:
             output = left * right
         elif op.value == "/":
             output = left / right
+        elif op.value == ">":
+            output = 1 if left > right else 0
+        elif op.value == ">=":
+            output = 1 if left >= right else 0
+        elif op.value == "<":
+            output = 1 if left < right else 0
+        elif op.value == "<=":
+            output = 1 if left <= right else 0
+        elif op.value == "?=":
+            output = 1 if left == right else 0
+        elif op.value == "and":
+            output = 1 if left and right else 0
+        elif op.value == "or":
+            output = 1 if left or right else 0
         return Integer(output) if (left_type == "INT" and right_type == "INT") else Float(output)
 
     def compute_unary(self, operator, operand):
@@ -64,5 +78,3 @@ class Interpreter:
                 right = self.interpret(right)
             operator = tree[1]
             return self.compute(left,operator,right)
-
-

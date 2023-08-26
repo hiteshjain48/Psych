@@ -39,6 +39,23 @@ class Parser:
             left_node = [left_node, operation, right_node]
         return left_node
 
+    def comp_expression(self):
+        left_node = self.boolean_expression()
+        while self.token.type == "COMP":
+            operation = self.token
+            self.move()
+            right_node = self.boolean_expression()
+            left_node = [left_node, operation, right_node]
+        return left_node
+    def boolean_expression(self):
+        left_node = self.expression()
+        while self.token.type == "BOOL":
+            operation = self.token
+            self.move()
+            right_node = self.expression()
+            left_node = [left_node, operation, right_node]
+        return left_node
+
     def statement(self):
         if self.token.type == "DECL":
             self.move()
@@ -47,10 +64,10 @@ class Parser:
             if self.token.value == "=":
                 operation = self.token
                 self.move()
-                right_node = self.expression()
+                right_node = self.comp_expression()
                 return [left_node, operation, right_node]
         elif self.token.type == "INT" or self.token.type == "FLT" or self.token.type == "OP":
-            return self.expression()
+            return self.comp_expression()
 
     def variable(self):
         if self.token.type.startswith("VAR"):
@@ -58,6 +75,7 @@ class Parser:
 
     def parse(self):
         return self.statement()
+
     def move(self):
         self.idx += 1
         if self.idx < len(self.tokens):
