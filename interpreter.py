@@ -60,13 +60,18 @@ class Interpreter:
             output = +operand
         elif operator.value == "-":
             output = -operand
-        return Integer(output) if (operand_type == "INT") else Float(output)
+        elif operator.value == "not":
+            return 1 if not operand else 0
+        return output
 
     def interpret(self,tree=None):
         if tree is None:
             tree = self.tree
         if isinstance(tree, list) and len(tree) == 2:
-            return self.compute_unary(tree[0], tree[1])
+            expression = tree[1]
+            if isinstance(expression, list):
+                expression = self.interpret(expression)
+            return self.compute_unary(tree[0], expression)
         elif not isinstance(tree, list):
             return tree
         else:
